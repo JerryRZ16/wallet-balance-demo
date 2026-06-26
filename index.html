@@ -13,6 +13,20 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
+        .page {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .page-enter {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .page-leave {
+            transform: translateX(-30%);
+            opacity: 0.5;
+        }
+        
         .balance-animate {
             transition: all 0.3s ease-out;
         }
@@ -63,267 +77,400 @@
         .detail-modal {
             backdrop-filter: blur(8px);
         }
+        
+        .bank-card {
+            transition: all 0.2s ease-out;
+        }
+        
+        .bank-card:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        .amount-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- 顶部导航 -->
-    <nav class="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
-        <div class="flex items-center gap-3">
-            <button class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
-                <i class="fa fa-angle-left text-gray-600 text-lg"></i>
-            </button>
-            <h1 class="text-lg font-semibold text-gray-800">霸王钱包</h1>
-        </div>
-        <div class="flex items-center gap-2">
-            <button id="toggleBalance" class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
-                <i id="eyeIcon" class="fa fa-eye text-gray-600"></i>
-            </button>
-            <button class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
-                <i class="fa fa-ellipsis-v text-gray-600"></i>
-            </button>
-        </div>
-    </nav>
-
-    <!-- 店铺切换 -->
-    <div class="bg-white px-4 py-2 flex items-center justify-between text-sm">
-        <span class="text-gray-500">上海美罗城店</span>
-        <button class="text-blue-600 flex items-center gap-1 hover:text-blue-700 transition">
-            切换
-            <i class="fa fa-chevron-right text-xs"></i>
-        </button>
-    </div>
-
-    <!-- 余额卡片 -->
-    <div class="px-4 pb-5">
-        <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-5 text-white balance-animate shadow-lg shadow-blue-200">
-            <!-- 总余额 -->
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-blue-100">账户总余额（元）</span>
-                    <span class="text-xs bg-white/15 text-blue-50 px-2.5 py-1 rounded-full backdrop-blur">
-                        实时更新
-                    </span>
-                </div>
-                <div id="totalBalance" class="text-4xl font-bold tracking-tight">
-                    17,871.07
-                </div>
-            </div>
-
-            <!-- 可提现与充值 -->
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div class="bg-white/10 rounded-xl p-3 backdrop-blur">
-                    <div class="text-xs text-blue-100 mb-1">可提现余额</div>
-                    <div id="withdrawBalance" class="text-xl font-semibold">11,555.89</div>
-                </div>
-                <div class="bg-white/10 rounded-xl p-3 backdrop-blur">
-                    <div class="text-xs text-blue-100 mb-1">充值余额</div>
-                    <div class="text-xl font-semibold">6,315.18</div>
-                </div>
-            </div>
-
-            <!-- 操作按钮 -->
-            <div class="grid grid-cols-2 gap-3">
-                <button class="bg-white text-blue-600 font-medium py-3 px-4 rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fa fa-plus-circle"></i>
-                    充值
-                </button>
-                <button class="bg-white/20 text-white font-medium py-3 px-4 rounded-xl hover:bg-white/25 transition flex items-center justify-center gap-2 backdrop-blur">
-                    <i class="fa fa-money"></i>
-                    提现
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 消息提醒（可关闭） -->
-    <div id="alertCard" class="px-4 mb-4 fade-in">
-        <div class="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 flex items-center justify-between">
+<body class="bg-gray-50 min-h-screen overflow-x-hidden">
+    <!-- 钱包首页 -->
+    <div id="homePage" class="page">
+        <!-- 顶部导航 -->
+        <nav class="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i class="fa fa-bell-o text-amber-600 text-sm"></i>
-                </div>
-                <div>
-                    <div class="text-sm font-medium text-amber-800">您有 141 笔待支付订单</div>
-                    <div class="text-xs text-amber-600">请及时处理</div>
-                </div>
+                <div class="w-9 h-9 flex items-center justify-center"></div>
+                <h1 class="text-lg font-semibold text-gray-800">霸王钱包</h1>
             </div>
-            <button onclick="document.getElementById('alertCard').style.display='none'" class="text-amber-400 hover:text-amber-600 transition">
-                <i class="fa fa-times"></i>
+            <div class="flex items-center gap-2">
+                <button id="toggleBalance" class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
+                    <i id="eyeIcon" class="fa fa-eye text-gray-600"></i>
+                </button>
+                <button class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
+                    <i class="fa fa-ellipsis-v text-gray-600"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 店铺切换 -->
+        <div class="bg-white px-4 py-2 flex items-center justify-between text-sm">
+            <span class="text-gray-500">上海美罗城店</span>
+            <button class="text-blue-600 flex items-center gap-1 hover:text-blue-700 transition">
+                切换
+                <i class="fa fa-chevron-right text-xs"></i>
             </button>
         </div>
-    </div>
 
-    <!-- 收款渠道 -->
-    <div class="px-4 mb-5">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-semibold text-gray-800">收款渠道</h3>
-                <a href="#" class="text-xs text-blue-600 hover:text-blue-700 transition">
-                    结算日历 <i class="fa fa-chevron-right ml-1 text-xs"></i>
-                </a>
-            </div>
-            
-            <div class="space-y-0">
-                <div class="flex items-center justify-between py-3 border-b border-gray-50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                            <i class="fa fa-weixin text-green-600 text-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-800">微信小程序</div>
-                            <div class="text-xs text-gray-400">今日已收款 52 笔</div>
-                        </div>
+        <!-- 余额卡片 -->
+        <div class="px-4 pb-5">
+            <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-5 text-white balance-animate shadow-lg shadow-blue-200">
+                <!-- 总余额 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-blue-100">账户总余额（元）</span>
+                        <span class="text-xs bg-white/15 text-blue-50 px-2.5 py-1 rounded-full backdrop-blur">
+                            实时更新
+                        </span>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm font-semibold text-gray-800">¥5,234.00</div>
+                    <div id="totalBalance" class="text-4xl font-bold tracking-tight">
+                        17,871.07
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between py-3 border-b border-gray-50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <i class="fa fa-qrcode text-blue-600 text-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-800">收银台扫码</div>
-                            <div class="text-xs text-gray-400">今日已收款 38 笔</div>
-                        </div>
+                <!-- 可提现与充值 -->
+                <div class="grid grid-cols-2 gap-4 mb-5">
+                    <div class="bg-white/10 rounded-xl p-3 backdrop-blur">
+                        <div class="text-xs text-blue-100 mb-1">可提现余额</div>
+                        <div id="withdrawBalance" class="text-xl font-semibold">11,555.89</div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm font-semibold text-gray-800">¥3,466.80</div>
+                    <div class="bg-white/10 rounded-xl p-3 backdrop-blur">
+                        <div class="text-xs text-blue-100 mb-1">充值余额</div>
+                        <div class="text-xl font-semibold">6,315.18</div>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between py-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                            <i class="fa fa-cutlery text-orange-600 text-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-800">美团团购</div>
-                            <div class="text-xs text-gray-400">今日暂无收款</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm font-semibold text-gray-800">¥0.00</div>
-                    </div>
+                <!-- 操作按钮 -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="bg-white text-blue-600 font-medium py-3 px-4 rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa fa-plus-circle"></i>
+                        充值
+                    </button>
+                    <button onclick="goToWithdraw()" class="bg-white/20 text-white font-medium py-3 px-4 rounded-xl hover:bg-white/25 transition flex items-center justify-center gap-2 backdrop-blur btn-primary">
+                        <i class="fa fa-money"></i>
+                        提现
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 交易明细 -->
-    <div class="px-4 mb-8">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-semibold text-gray-800">交易明细</h3>
-                <a href="#" class="text-xs text-blue-600 hover:text-blue-700 transition">
-                    全部账单 <i class="fa fa-chevron-right ml-1 text-xs"></i>
-                </a>
-            </div>
-
-            <!-- 日期切换 -->
-            <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-                <button class="px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg whitespace-nowrap">
-                    今天 06-26
-                </button>
-                <button class="px-3 py-1.5 text-gray-500 text-xs font-medium rounded-lg hover:bg-gray-50 transition whitespace-nowrap">
-                    昨天 06-25
-                </button>
-                <button class="px-3 py-1.5 text-gray-500 text-xs font-medium rounded-lg hover:bg-gray-50 transition whitespace-nowrap">
-                    06-24
-                </button>
-            </div>
-
-            <!-- 交易列表 -->
-            <div class="space-y-0">
-                <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx1')">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                                <i class="fa fa-arrow-up text-red-500"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-800">提现至银行卡</div>
-                                <div class="text-xs text-gray-400">14:23:05 · 尾号 6688</div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm font-semibold text-red-500">-5,000.00</div>
-                            <div class="text-xs text-gray-400">处理中</div>
-                        </div>
+        <!-- 消息提醒（可关闭） -->
+        <div id="alertCard" class="px-4 mb-4 fade-in">
+            <div class="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa fa-bell-o text-amber-600 text-sm"></i>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
-                        <div class="text-xs text-gray-400">交易后余额：¥17,871.07</div>
-                        <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
+                    <div>
+                        <div class="text-sm font-medium text-amber-800">您有 141 笔待支付订单</div>
+                        <div class="text-xs text-amber-600">请及时处理</div>
                     </div>
                 </div>
+                <button onclick="document.getElementById('alertCard').style.display='none'" class="text-amber-400 hover:text-amber-600 transition">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
 
-                <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx2')">
-                    <div class="flex items-center justify-between">
+        <!-- 收款渠道 -->
+        <div class="px-4 mb-5">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">收款渠道</h3>
+                    <a href="#" class="text-xs text-blue-600 hover:text-blue-700 transition">
+                        结算日历 <i class="fa fa-chevron-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+                
+                <div class="space-y-0">
+                    <div class="flex items-center justify-between py-3 border-b border-gray-50">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                                <i class="fa fa-arrow-down text-green-500"></i>
+                                <i class="fa fa-weixin text-green-600 text-lg"></i>
                             </div>
                             <div>
-                                <div class="text-sm font-medium text-gray-800">订单收款</div>
-                                <div class="text-xs text-gray-400">13:45:22 · 微信小程序</div>
+                                <div class="text-sm font-medium text-gray-800">微信小程序</div>
+                                <div class="text-xs text-gray-400">今日已收款 52 笔</div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-sm font-semibold text-green-600">+234.50</div>
-                            <div class="text-xs text-gray-400">已到账</div>
+                            <div class="text-sm font-semibold text-gray-800">¥5,234.00</div>
                         </div>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
-                        <div class="text-xs text-gray-400">交易后余额：¥22,871.07</div>
-                        <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
+
+                    <div class="flex items-center justify-between py-3 border-b border-gray-50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fa fa-qrcode text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">收银台扫码</div>
+                                <div class="text-xs text-gray-400">今日已收款 38 笔</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-semibold text-gray-800">¥3,466.80</div>
+                        </div>
                     </div>
+
+                    <div class="flex items-center justify-between py-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <i class="fa fa-cutlery text-orange-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">美团团购</div>
+                                <div class="text-xs text-gray-400">今日暂无收款</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-semibold text-gray-800">¥0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易明细 -->
+        <div class="px-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">交易明细</h3>
+                    <a href="#" class="text-xs text-blue-600 hover:text-blue-700 transition">
+                        全部账单 <i class="fa fa-chevron-right ml-1 text-xs"></i>
+                    </a>
                 </div>
 
-                <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx3')">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <i class="fa fa-exchange text-purple-500"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-800">资金调拨</div>
-                                <div class="text-xs text-gray-400">11:20:33 · 从总店调入</div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm font-semibold text-purple-600">+10,000.00</div>
-                            <div class="text-xs text-gray-400">已到账</div>
-                        </div>
-                    </div>
-                    <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
-                        <div class="text-xs text-gray-400">交易后余额：¥22,636.57</div>
-                        <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
-                    </div>
+                <!-- 日期切换 -->
+                <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+                    <button class="px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg whitespace-nowrap">
+                        今天 06-26
+                    </button>
+                    <button class="px-3 py-1.5 text-gray-500 text-xs font-medium rounded-lg hover:bg-gray-50 transition whitespace-nowrap">
+                        昨天 06-25
+                    </button>
+                    <button class="px-3 py-1.5 text-gray-500 text-xs font-medium rounded-lg hover:bg-gray-50 transition whitespace-nowrap">
+                        06-24
+                    </button>
                 </div>
 
-                <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx4')">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                                <i class="fa fa-shopping-cart text-red-500"></i>
+                <!-- 交易列表 -->
+                <div class="space-y-0">
+                    <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx1')">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                                    <i class="fa fa-arrow-up text-red-500"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-800">提现至银行卡</div>
+                                    <div class="text-xs text-gray-400">14:23:05 · 尾号 6688</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-800">采购支付</div>
-                                <div class="text-xs text-gray-400">10:15:08 · 食材供应商</div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-red-500">-5,000.00</div>
+                                <div class="text-xs text-gray-400">处理中</div>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-sm font-semibold text-red-500">-8,563.43</div>
-                            <div class="text-xs text-gray-400">已支付</div>
+                        <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
+                            <div class="text-xs text-gray-400">交易后余额：¥17,871.07</div>
+                            <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
                         </div>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
-                        <div class="text-xs text-gray-400">交易后余额：¥12,636.57</div>
-                        <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
+
+                    <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx2')">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="fa fa-arrow-down text-green-500"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-800">订单收款</div>
+                                    <div class="text-xs text-gray-400">13:45:22 · 微信小程序</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-green-600">+234.50</div>
+                                <div class="text-xs text-gray-400">已到账</div>
+                            </div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
+                            <div class="text-xs text-gray-400">交易后余额：¥22,871.07</div>
+                            <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item rounded-xl p-3 cursor-pointer" onclick="showDetail('tx3')">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <i class="fa fa-exchange text-purple-500"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-800">资金调拨</div>
+                                    <div class="text-xs text-gray-400">11:20:33 · 从总店调入</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-purple-600">+10,000.00</div>
+                                <div class="text-xs text-gray-400">已到账</div>
+                            </div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
+                            <div class="text-xs text-gray-400">交易后余额：¥22,636.57</div>
+                            <span class="text-xs text-blue-600">详情 <i class="fa fa-angle-right ml-0.5"></i></span>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提现页面 -->
+    <div id="withdrawPage" class="page page-enter fixed inset-0 bg-gray-50 z-50 hidden">
+        <!-- 顶部导航 -->
+        <nav class="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-full transition">
+                    <i class="fa fa-angle-left text-gray-600 text-lg"></i>
+                </button>
+                <h1 class="text-lg font-semibold text-gray-800">提现</h1>
+            </div>
+            <button class="text-sm text-blue-600 font-medium hover:text-blue-700 transition">
+                提现记录
+            </button>
+        </nav>
+
+        <div class="px-4 py-5">
+            <!-- 可提现金额 -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-5">
+                <div class="text-sm text-gray-500 mb-2">可提现余额（元）</div>
+                <div class="text-4xl font-bold text-gray-800 mb-1">11,555.89</div>
+                <div class="text-xs text-green-600 flex items-center gap-1">
+                    <i class="fa fa-check-circle"></i>
+                    余额充足，可正常提现
+                </div>
+            </div>
+
+            <!-- 提现金额输入 -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-5">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm font-medium text-gray-800">提现金额</span>
+                    <button onclick="fillAllAmount()" class="text-sm text-blue-600 font-medium hover:text-blue-700 transition">
+                        全部提现
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <span class="absolute left-0 top-1/2 -translate-y-1/2 text-3xl font-bold text-gray-800">¥</span>
+                    <input 
+                        id="withdrawAmount" 
+                        type="number" 
+                        placeholder="0.00" 
+                        class="amount-input w-full pl-8 pr-4 py-3 text-3xl font-bold text-gray-800 border-b-2 border-gray-200 bg-transparent"
+                    >
+                </div>
+                
+                <div class="flex justify-between mt-3 text-xs">
+                    <span class="text-gray-400">最低提现金额 ¥1.00</span>
+                    <span class="text-gray-400">免手续费</span>
+                </div>
+            </div>
+
+            <!-- 到账银行卡 -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-5">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm font-medium text-gray-800">到账银行卡</span>
+                    <button class="text-sm text-blue-600 font-medium hover:text-blue-700 transition">
+                        更换
+                    </button>
+                </div>
+                
+                <div class="bank-card flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer">
+                    <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-xs font-bold">招行</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-800">招商银行</div>
+                        <div class="text-xs text-gray-500">储蓄卡（尾号 6688）</div>
+                    </div>
+                    <i class="fa fa-check-circle text-blue-600 text-lg"></i>
+                </div>
+            </div>
+
+            <!-- 到账时间说明 -->
+            <div class="bg-blue-50 rounded-xl p-4 mb-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fa fa-clock-o text-blue-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium text-blue-800 mb-1">预计到账时间</div>
+                        <div class="text-xs text-blue-600 leading-relaxed">
+                            今日 17:00 前提现，预计 2 小时内到账<br>
+                            今日 17:00 后提现，预计下一个工作日 12:00 前到账
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提现按钮 -->
+            <button onclick="confirmWithdraw()" class="w-full bg-blue-600 text-white font-semibold py-4 rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-200 btn-primary">
+                确认提现
+            </button>
+
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-400">
+                    提现服务由网商银行提供
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提现成功弹窗 -->
+    <div id="successModal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/40 detail-modal" onclick="hideSuccessModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-sm bg-white rounded-2xl p-6 slide-up">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa fa-check text-3xl text-green-600"></i>
+            </div>
+            <div class="text-center mb-2">
+                <h3 class="text-lg font-semibold text-gray-800 mb-1">提现申请已提交</h3>
+                <p class="text-3xl font-bold text-gray-800" id="successAmount">¥5,000.00</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-xl p-4 mb-5">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-gray-500">到账银行卡</span>
+                    <span class="font-medium text-gray-800">招商银行（尾号 6688）</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">预计到账时间</span>
+                    <span class="font-medium text-green-600">2 小时内</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="hideSuccessModal()" class="flex-1 bg-gray-100 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-200 transition">
+                    返回钱包
+                </button>
+                <button onclick="viewWithdrawRecord()" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition">
+                    查看记录
+                </button>
             </div>
         </div>
     </div>
@@ -398,6 +545,75 @@
     </div>
 
     <script>
+        // 页面跳转
+        function goToWithdraw() {
+            const homePage = document.getElementById('homePage');
+            const withdrawPage = document.getElementById('withdrawPage');
+            
+            homePage.classList.add('page-leave');
+            withdrawPage.classList.remove('hidden');
+            
+            setTimeout(() => {
+                withdrawPage.classList.remove('page-enter');
+                setTimeout(() => {
+                    homePage.classList.add('hidden');
+                    homePage.classList.remove('page-leave');
+                }, 300);
+            }, 50);
+        }
+
+        function goBack() {
+            const homePage = document.getElementById('homePage');
+            const withdrawPage = document.getElementById('withdrawPage');
+            
+            homePage.classList.remove('hidden');
+            withdrawPage.classList.add('page-enter');
+            
+            setTimeout(() => {
+                homePage.classList.add('page-enter');
+                setTimeout(() => {
+                    homePage.classList.remove('page-enter');
+                    withdrawPage.classList.add('hidden');
+                    withdrawPage.classList.remove('page-enter');
+                }, 300);
+            }, 50);
+        }
+
+        // 全部提现
+        function fillAllAmount() {
+            document.getElementById('withdrawAmount').value = '11555.89';
+        }
+
+        // 确认提现
+        function confirmWithdraw() {
+            const amount = document.getElementById('withdrawAmount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                alert('请输入提现金额');
+                return;
+            }
+            if (parseFloat(amount) > 11555.89) {
+                alert('提现金额不能超过可提现余额');
+                return;
+            }
+            
+            document.getElementById('successAmount').textContent = '¥' + parseFloat(amount).toFixed(2);
+            document.getElementById('successModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 隐藏成功弹窗
+        function hideSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            goBack();
+        }
+
+        // 查看提现记录
+        function viewWithdrawRecord() {
+            alert('跳转到提现记录页面');
+            hideSuccessModal();
+        }
+
         // 余额显示/隐藏切换
         const toggleBtn = document.getElementById('toggleBalance');
         const eyeIcon = document.getElementById('eyeIcon');
@@ -443,59 +659,4 @@
                 no: 'TX202606261345227788',
                 before: '¥22,636.57',
                 after: '¥22,871.07',
-                changeIcon: '<i class="fa fa-plus text-xs text-green-500"></i>',
-                changeBg: 'bg-green-100'
-            },
-            tx3: {
-                icon: '<i class="fa fa-exchange text-2xl text-purple-600"></i>',
-                iconBg: 'bg-purple-100',
-                title: '资金调拨到账',
-                amount: '+¥10,000.00',
-                type: '资金调拨（总店调入）',
-                time: '2026-06-26 11:20:33',
-                no: 'TX202606261120336699',
-                before: '¥12,636.57',
-                after: '¥22,636.57',
-                changeIcon: '<i class="fa fa-plus text-xs text-purple-500"></i>',
-                changeBg: 'bg-purple-100'
-            },
-            tx4: {
-                icon: '<i class="fa fa-shopping-cart text-2xl text-red-500"></i>',
-                iconBg: 'bg-red-100',
-                title: '支付成功',
-                amount: '-¥8,563.43',
-                type: '采购支付',
-                time: '2026-06-26 10:15:08',
-                no: 'TX202606261015085566',
-                before: '¥21,200.00',
-                after: '¥12,636.57',
-                changeIcon: '<i class="fa fa-minus text-xs text-red-500"></i>',
-                changeBg: 'bg-red-100'
-            }
-        };
-
-        function showDetail(txId) {
-            const tx = transactions[txId];
-            document.getElementById('detailIcon').className = `w-16 h-16 ${tx.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-3`;
-            document.getElementById('detailIcon').innerHTML = tx.icon;
-            document.getElementById('detailTitle').textContent = tx.title;
-            document.getElementById('detailAmount').textContent = tx.amount;
-            document.getElementById('detailType').textContent = tx.type;
-            document.getElementById('detailTime').textContent = tx.time;
-            document.getElementById('detailNo').textContent = tx.no;
-            document.getElementById('beforeBalance').textContent = tx.before;
-            document.getElementById('afterBalance').textContent = tx.after;
-            document.getElementById('changeArrow').className = `w-6 h-6 ${tx.changeBg} rounded-full flex items-center justify-center mx-1`;
-            document.getElementById('changeArrow').innerHTML = tx.changeIcon;
-            
-            document.getElementById('detailModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function hideDetail() {
-            document.getElementById('detailModal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    </script>
-</body>
-</html>
+                changeIcon: '<i class="fa fa
