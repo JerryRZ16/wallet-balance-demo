@@ -341,7 +341,7 @@
     </div>
 
     <!-- 提现页面 -->
-    <div id="withdrawPage" class="page page-enter fixed inset-0 bg-gray-50 z-50 hidden">
+    <div id="withdrawPage" class="page fixed inset-0 bg-gray-50 z-50 hidden">
         <!-- 顶部导航 -->
         <nav class="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
             <div class="flex items-center gap-3">
@@ -550,33 +550,48 @@
             const homePage = document.getElementById('homePage');
             const withdrawPage = document.getElementById('withdrawPage');
             
-            homePage.classList.add('page-leave');
+            // 设置提现页面初始位置（屏幕右侧外）
+            withdrawPage.style.transform = 'translateX(100%)';
+            withdrawPage.style.opacity = '0';
             withdrawPage.classList.remove('hidden');
             
+            // 强制重排，确保初始状态生效
+            void withdrawPage.offsetWidth;
+            
+            // 首页左滑淡出
+            homePage.classList.add('page-leave');
+            // 提现页面从右侧滑入
+            withdrawPage.style.transform = 'translateX(0)';
+            withdrawPage.style.opacity = '1';
+            
             setTimeout(() => {
-                withdrawPage.classList.remove('page-enter');
-                setTimeout(() => {
-                    homePage.classList.add('hidden');
-                    homePage.classList.remove('page-leave');
-                }, 300);
-            }, 50);
+                homePage.classList.add('hidden');
+                homePage.classList.remove('page-leave');
+            }, 300);
         }
 
         function goBack() {
             const homePage = document.getElementById('homePage');
             const withdrawPage = document.getElementById('withdrawPage');
             
+            // 首页从左侧滑入
+            homePage.style.transform = 'translateX(-30%)';
+            homePage.style.opacity = '0.5';
             homePage.classList.remove('hidden');
-            withdrawPage.classList.add('page-enter');
+            
+            // 强制重排
+            void homePage.offsetWidth;
+            
+            // 首页恢复原位
+            homePage.style.transform = 'translateX(0)';
+            homePage.style.opacity = '1';
+            // 提现页面向右滑出
+            withdrawPage.style.transform = 'translateX(100%)';
+            withdrawPage.style.opacity = '0';
             
             setTimeout(() => {
-                homePage.classList.add('page-enter');
-                setTimeout(() => {
-                    homePage.classList.remove('page-enter');
-                    withdrawPage.classList.add('hidden');
-                    withdrawPage.classList.remove('page-enter');
-                }, 300);
-            }, 50);
+                withdrawPage.classList.add('hidden');
+            }, 300);
         }
 
         // 全部提现
